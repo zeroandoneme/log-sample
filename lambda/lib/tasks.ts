@@ -1,16 +1,33 @@
 import { DynamoDB } from "aws-sdk";
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
+import {
+  APIGatewayProxyEventV2,
+  APIGatewayProxyResultV2,
+  Context,
+} from "aws-lambda";
 import { env } from "process";
 import { v4 } from "uuid";
 
+import pino from "pino";
+
 const dynamoClient = new DynamoDB.DocumentClient();
+
+const logger = pino({
+  formatters: {
+    level: (label: string) => {
+      return { level: label };
+    },
+  },
+});
 
 // Export new function to be called by Lambda
 export async function post(
-  event: APIGatewayProxyEventV2
+  event: APIGatewayProxyEventV2,
+  context: Context
 ): Promise<APIGatewayProxyResultV2> {
   // Log the event to debug the application during development
-  console.log(event);
+
+  logger.info(event);
+  logger.info("Simple Message");
 
   // If we do not receive a body, we cannot continue...
   if (!event.body) {
@@ -48,10 +65,17 @@ export async function post(
 
 // Export new function to be called by Lambda
 export async function get(
-  event: APIGatewayProxyEventV2
+  event: APIGatewayProxyEventV2,
+  context: Context
 ): Promise<APIGatewayProxyResultV2> {
   // Log the event to debug the application during development
-  console.log(event);
+  logger.info(event);
+  logger.info("Simple Message");
+
+  var data = { uuid: "123-2313-13" };
+  // validate_crm(data);
+
+  logger.info(data);
 
   // Get a list of all tasks from the DB, extract the method to do paging
   const tasks = (await getTasksFromDatabase()).map((task) => ({

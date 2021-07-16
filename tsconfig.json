@@ -4,6 +4,7 @@
     "module": "commonjs",
     "lib": ["es2018"],
     "declaration": true,
+    "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
